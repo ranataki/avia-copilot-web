@@ -637,7 +637,10 @@ async function handleSignup(event) {
   const button = form.querySelector('button');
 
   try {
+    status.textContent = 'Signing up...';
     button.disabled = true;
+
+    console.log('Submitting email:', email);
     const response = await fetch('/.netlify/functions/emails', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -645,6 +648,7 @@ async function handleSignup(event) {
     });
 
     const data = await response.json();
+    console.log('Server response:', { status: response.status, data });
 
     if (response.ok) {
       form.reset();
@@ -654,11 +658,12 @@ async function handleSignup(event) {
       status.textContent = 'This email is already registered';
       status.style.color = 'var(--text-muted)';
     } else {
-      throw new Error(data.error || 'Failed to sign up');
+      status.textContent = data.error || 'Sorry, something went wrong. Please try again.';
+      status.style.color = 'var(--text-muted)';
     }
   } catch (error) {
     console.error('Signup error:', error);
-    status.textContent = 'Sorry, something went wrong. Please try again.';
+    status.textContent = 'Network error. Please check your connection and try again.';
     status.style.color = '#FFB020';
   } finally {
     button.disabled = false;
