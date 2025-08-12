@@ -1,6 +1,11 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event) {
+  console.log('Function environment:', {
+    nodeEnv: process.env.NODE_ENV,
+    hasToken: !!process.env.AVWX_TOKEN,
+    tokenStart: process.env.AVWX_TOKEN ? process.env.AVWX_TOKEN.substring(0, 4) : 'none'
+  });
   const { icao } = event.queryStringParameters;
   console.log('AVWX request for:', icao);
   console.log('AVWX token:', process.env.AVWX_TOKEN);
@@ -17,6 +22,11 @@ exports.handler = async function(event) {
     const url = `https://avwx.rest/api/metar/${icao}?options=summary,translate`;
     console.log('Fetching from:', url);
     
+    console.log('Making AVWX request with headers:', {
+      Authorization: `Bearer ${process.env.AVWX_TOKEN?.substring(0, 4)}...`,
+      url: url
+    });
+
     const response = await fetch(url, {
       headers: { 
         Authorization: `Bearer ${process.env.AVWX_TOKEN}`,
@@ -24,6 +34,7 @@ exports.handler = async function(event) {
       }
     });
     
+    console.log('AVWX response status:', response.status);
     if (!response.ok) {
       const text = await response.text();
       console.error('AVWX API error:', response.status, text);

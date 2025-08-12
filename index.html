@@ -655,6 +655,7 @@ const log = document.getElementById('demo-log');
 
 // If you're using a proxy (recommended), use the proxy version:
 async function fetchMETAR(icao) {
+  console.log(`Starting METAR fetch for ${icao}...`);
   const ts = Date.now();
   console.log(`Fetching METAR for ${icao}...`);
   const res = await fetch(`/.netlify/functions/avwx?icao=${icao}&_=${ts}`, {
@@ -664,7 +665,15 @@ async function fetchMETAR(icao) {
       'Pragma': 'no-cache'
     }
   });
-  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('METAR fetch error:', {
+      status: res.status,
+      statusText: res.statusText,
+      error: errorText
+    });
+    throw new Error(`HTTP error! status: ${res.status} - ${errorText}`);
+  }
   const data = await res.json();
   console.log('AVWX response:', data);
   return data;
