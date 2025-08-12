@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  command = "npm install && cp *.html public/ && cp -r images public/ && cd netlify/functions && npm install"
+  command = "npm install && mkdir -p public && cp *.html public/ && cp -r images public/ && cd netlify/functions && npm install"
 
 [functions]
   directory = "netlify/functions"
