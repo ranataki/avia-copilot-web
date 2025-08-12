@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Avia — Your AI Copilot for Every Flight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0B1E3C;
+            --text: #F5F7FA;
+            --text-muted: #C8D3E1;
+            --primary: #4DA3FF;
+            --card: rgba(23, 35, 57, 0.5);
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            background: var(--bg);
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .main-content {
+            background: var(--bg);
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        section {
+            padding: 80px 0;
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(11,30,60,0.9) 0%, rgba(11,30,60,1) 100%);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(11,30,60,0.95) 0%,
+                rgba(11,30,60,0.85) 50%,
+                rgba(11,30,60,0.95) 100%
+            );
+            z-index: 1;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('images/cockpit.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+            opacity: 0.4;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 64px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 32px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 20px;
+            margin-bottom: 48px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Form */
+        .email-form {
+            max-width: 500px;
+            margin: 32px auto;
+        }
+
+        .email-form .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+        input[type="email"] {
+            flex: 1;
+            padding: 16px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--radius);
+            font-size: 16px;
+            color: var(--text);
+            font-family: inherit;
+        }
+        input[type="email"]::placeholder {
+            color: var(--text-muted);
+        }
+        button[type="submit"] {
+            padding: 16px 24px;
+            background: var(--primary);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        button[type="submit"]:hover {
+            background: #3B8EE8;
+        }
+        .trust {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 16px;
+            opacity: 0.8;
+        }
+
+        /* Demo Section */
+        .demo-card {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--radius);
+            background: var(--card);
+            text-align: left;
+        }
+        .demo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .demo-header h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0;
+        }
+        .demo-status {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+            text-align: right;
+            opacity: 0.7;
+        }
+        .demo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: gray;
+            border: 1px solid rgba(255,255,255,.25);
+        }
+        .demo-buttons {
+            margin: 16px 0;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .demo-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-family: inherit;
+        }
+        .demo-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .demo-log {
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            margin-top: 24px;
+            min-height: 120px;
+            color: var(--text);
+            opacity: 0.9;
+            background: rgba(255,255,255,.02);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 60px 0; }
+            h1 { 
+                font-size: 40px;
+                padding: 0 24px;
+            }
+            h2 {
+                font-size: 24px;
+            }
+            .subtitle {
+                padding: 0 24px;
+                font-size: 14px;
+            }
+            .email-form {
+                flex-direction: column;
+                padding: 0 24px;
+            }
+            .demo-card {
+                margin: 0 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { 
+                font-size: 24px;
+            }
+        }
+    /* Features Section */
+    .features {
+        padding: 80px 0;
+    }
+    .features .container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+    .feature {
+        text-align: center;
+        padding: 32px;
+        background: rgba(11, 30, 60, 0.4);
+        border: 1px solid rgba(77, 163, 255, 0.1);
+        border-radius: var(--radius);
+        backdrop-filter: blur(8px);
+    }
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 16px;
+        color: var(--primary);
+    }
+    .feature-icon svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+    }
+    .feature-title {
+        font-size: 20px;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+    .feature-desc {
+        color: var(--text-muted);
+        font-size: 15px;
+        line-height: 1.5;
+        opacity: 0.8;
+    }
+
+    @media (max-width: 1024px) {
+        .features .container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .features .container {
+            grid-template-columns: 1fr;
+            padding: 0 16px;
+        }
+    }
+
+    /* Vision Section */
+    .vision {
+        text-align: center;
+        padding: 120px 0;
+    }
+    .vision h2 {
+        font-size: 48px;
+        line-height: 1.2;
+        margin-bottom: 24px;
+    }
+    .vision-text {
+        max-width: 800px;
+        margin: 0 auto 64px;
+        color: var(--text-muted);
+        font-size: 20px;
+        line-height: 1.6;
+    }
+    .timeline {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        max-width: 1200px;
+        margin: 80px auto;
+        position: relative;
+        padding: 0 40px;
+        gap: 24px;
+    }
+    .timeline-item {
+        flex: 0 1 auto;
+        text-align: center;
+        position: relative;
+        padding: 8px 16px;
+        min-width: 100px;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--radius);
+        background: rgba(255,255,255,0.03);
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 140px;
+        left: 80px;
+        right: 80px;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            var(--primary) 0%,
+            rgba(77, 163, 255, 0.8) 50%,
+            rgba(255, 99, 71, 0.5) 100%
+        );
+        filter: blur(0.5px);
+    }
+    .timeline-step {
+        position: relative;
+        z-index: 1;
+        background: rgba(11, 30, 60, 0.4);
+        min-width: 200px;
+        padding: 32px;
+        border-radius: 16px;
+        border: 1px solid rgba(77, 163, 255, 0.1);
+        backdrop-filter: blur(8px);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .timeline-step:hover {
+        transform: translateY(-8px);
+    }
+    .timeline-step::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        background: linear-gradient(180deg, 
+            rgba(77, 163, 255, 0.1) 0%,
+            rgba(77, 163, 255, 0) 100%
+        );
+        pointer-events: none;
+    }
+    .timeline-year {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 8px;
+        opacity: 0.7;
+    }
+    .timeline-label {
+        font-weight: 500;
+        font-size: 20px;
+        white-space: nowrap;
+        color: var(--text);
+        letter-spacing: 0.5px;
+    }
+
+    /* Founder Section */
+    .founder {
+        padding: 80px 0;
+    }
+    .founder .container {
+        text-align: left;
+        max-width: 800px;
+    }
+    .founder h2 {
+        font-size: 32px;
+        margin-bottom: 16px;
+    }
+    .founder-content {
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        margin: 80px auto;
+        max-width: 800px;
+    }
+    .founder-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .founder-bio {
+        color: var(--text-muted);
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        flex: 1;
+    }
+
+    @media (max-width: 768px) {
+        .timeline {
+            flex-direction: column;
+            gap: 24px;
+            padding: 0;
+        }
+        .timeline::before {
+            display: none;
+        }
+        .vision h2 {
+            font-size: 36px;
+            padding: 0 24px;
+        }
+        .vision-text {
+            padding: 0 24px;
+            margin-bottom: 48px;
+            font-size: 18px;
+        }
+        .founder-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 24px;
+        }
+        .founder-bio {
+            padding: 0 24px;
+        }
+    }
+    /* Final CTA */
+    .final-cta {
+        text-align: center;
+        padding: 80px 0;
+        margin-top: 0;
+    }
+
+    .final-cta h2 {
+        font-size: 48px;
+        line-height: 1.2;
+        margin-bottom: 32px;
+    }
+
+    .final-cta .email-form {
+        margin: 0 auto 16px;
+    }
+
+    .launch-note {
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    .footer {
+        padding: 40px 0;
+        margin-top: 0;
+    }
+
+    .footer .container {
+        text-align: center;
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 24px;
+        color: var(--text-muted);
+        font-size: 14px;
+        justify-content: center;
+        opacity: 0.7;
+    }
+
+    .footer-links a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .footer-links a:hover {
+        color: var(--text);
+    }
+
+    .footer-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .footer-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 4px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(11,30,60,0.9);
+        color: var(--text-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        line-height: 1.5;
+        font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    .footer-btn:hover {
+        background: rgba(11,30,60,1);
+        border-color: rgba(255,255,255,0.2);
+        color: var(--text);
+    }
+
+    .footer-btn::before {
+        content: '';
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        opacity: 0.7;
+        background: currentColor;
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.8 3.8C2.7 4.9 2 6.3 2 8v8c0 3.3 2.7 6 6 6h8c1.7 0 3.1-.7 4.2-1.8l-2.1-2.1C17.4 18.7 16.7 19 16 19H8c-1.7 0-3-1.3-3-3V8c0-.7.3-1.4.7-2.1L3.8 3.8zM21 8V6c0-1.1-.9-2-2-2h-2.1c-.5 0-.9-.4-.9-.9V3c0-.5-.4-1-1-1h-4c-.5 0-1 .5-1 1v.1c0 .5-.4.9-.9.9H7.8l2 2H19v4.2l2 2V8zM3.7 2.3c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4l18 18c.4.4 1 .4 1.4 0s.4-1 0-1.4l-18-18z'/%3E%3C/svg%3E");
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.8 3.8C2.7 4.9 2 6.3 2 8v8c0 3.3 2.7 6 6 6h8c1.7 0 3.1-.7 4.2-1.8l-2.1-2.1C17.4 18.7 16.7 19 16 19H8c-1.7 0-3-1.3-3-3V8c0-.7.3-1.4.7-2.1L3.8 3.8zM21 8V6c0-1.1-.9-2-2-2h-2.1c-.5 0-.9-.4-.9-.9V3c0-.5-.4-1-1-1h-4c-.5 0-1 .5-1 1v.1c0 .5-.4.9-.9.9H7.8l2 2H19v4.2l2 2V8zM3.7 2.3c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4l18 18c.4.4 1 .4 1.4 0s.4-1 0-1.4l-18-18z'/%3E%3C/svg%3E");
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+    }
+
+    .footer-btn.error::before {
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1 4h-2v-2h2v2z'/%3E%3C/svg%3E");
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1 4h-2v-2h2v2z'/%3E%3C/svg%3E");
+    }
+
+    /* Footer */
+    footer {
+        padding: 40px 0;
+        text-align: center;
+        color: var(--text-muted);
+    }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <h1>Your AI Copilot for<br>Every Flight</h1>
+            <p class="subtitle">Real-time FAA data, weather, and compliance by voice —<br>even with no signal at 10,000 ft.</p>
+            <form class="email-form" id="email-form" onsubmit="handleSignup(event)">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Enter your email for early access" required>
+                    <button type="submit">Get Early Access ↗</button>
+                </div>
+                <div class="signup-status" style="font-size: 13px; color: var(--text-muted); text-align: left; min-height: 13px;"></div>
+            </form>
+            <p class="trust">Private pilot-built • YC top 5% founder</p>
+        </div>
+    </div>
+
+    <main class="main-content">
+    <section>
+        <div class="container">
+            <h2>See Avia Beta in Action</h2>
+            <div id="avia-live-demo" style="max-width:780px;margin:0 auto;padding:16px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(255,255,255,.03);color:inherit;text-align:left">
+  <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+    <h3 style="margin:0">Live Demo (Cessna 172)</h3>
+    <small id="demo-status" style="display:flex;align-items:center;gap:8px;opacity:.8">
+      <span id="demo-dot" style="width:10px;height:10px;border-radius:50%;background:gray;border:1px solid rgba(255,255,255,.25)"></span>
+      <span id="demo-status-text">Fetching live METAR…</span>
+    </small>
+  </div>
+
+  <div style="margin:12px 0 10px;font-size:14px;opacity:.85">Try one:</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+    <button class="demo-q">can i land in ksfo now?</button>
+    <button class="demo-q">i'm having an engine fire</button>
+    <button class="demo-q">what is the weather like in kpao</button>
+  </div>
+
+  <div id="demo-log" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;white-space:pre-wrap;min-height:150px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px"></div>
+
+  <small style="display:block;margin-top:10px;opacity:.75">
+    Demo only — not for operational use. Always follow your POH/AFM, ATIS/ATC.
+  </small>
+</div>
+
+    <script>
+// ---------- Email Signup ----------
+async function handleSignup(event) {
+  event.preventDefault();
+  const form = event.target;
+  const email = form.email.value;
+  const status = form.querySelector('.signup-status');
+  const button = form.querySelector('button');
+
+  try {
+    button.disabled = true;
+    const response = await fetch('/.netlify/functions/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      form.reset();
+      status.textContent = "Thanks for signing up! We'll be in touch soon.";
+      status.style.color = '#2EE59D';
+    } else if (response.status === 409) {
+      status.textContent = 'This email is already registered';
+      status.style.color = 'var(--text-muted)';
+    } else {
+      throw new Error(data.error || 'Failed to sign up');
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    status.textContent = 'Sorry, something went wrong. Please try again.';
+    status.style.color = '#FFB020';
+  } finally {
+    button.disabled = false;
+  }
+}
+
+// ---------- Helpers & Config ----------
+// ---------- Helpers & Config ----------
+const RUNWAY = { KSFO: { name:'28R', hdg:284 }, KPAO: { name:'31', hdg:310 } };
+const FALLBACK = {
+  KSFO: { raw: "KSFO 091856Z 28018G24KT 10SM FEW018 SCT025 20/13 A2992", flight_rules:"VFR" },
+  KPAO: { raw: "KPAO 091855Z 30012KT 10SM FEW020 22/12 A2994", flight_rules:"VFR" }
+};
+
+const dot = document.getElementById('demo-dot');
+const statusText = document.getElementById('demo-status-text');
+const log = document.getElementById('demo-log');
+
+// If you're using a proxy (recommended), use the proxy version:
+async function fetchMETAR(icao) {
+  const ts = Date.now();
+  console.log(`Fetching METAR for ${icao}...`);
+  const res = await fetch(`/.netlify/functions/avwx?icao=${icao}&_=${ts}`, {
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    }
+  });
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  const data = await res.json();
+  console.log('AVWX response:', data);
+  return data;
+}
+
+function crosswind(wdir, wspd, rwyHdg){
+  if(wdir==null || wspd==null || rwyHdg==null) return null;
+  const rad = Math.PI/180;
+  let diff = Math.abs(wdir - rwyHdg);
+  if(diff > 180) diff = 360 - diff;
+  const x = Math.abs(wspd * Math.sin(diff*rad));
+  const h = Math.abs(wspd * Math.cos(diff*rad));
+  return { x: Math.round(x*10)/10, h: Math.round(h*10)/10, diff: Math.round(diff) };
+}
+
+// Convert AVWX to the shape your formatter expects
+function fromAvwx(av){
+  if (!av) return null;
+  return {
+    cat: av.flight_rules || 'VFR',
+    wind: {
+      dir: av.wind_direction?.value || 'VRB',
+      spd: av.wind_speed?.value || 0,
+      gust: av.wind_gust?.value
+    },
+    visSM: av.visibility?.value || 10,
+    clouds: av.clouds?.[0] ? {
+      cover: av.clouds[0].type || 'CLR',
+      baseHundredsFt: String(av.clouds[0].altitude || 0).padStart(3,'0')
+    } : { cover: 'CLR', baseHundredsFt: '000' },
+    altHg: av.altimeter?.value?.toFixed(2) || '29.92',
+    raw: av.raw || ''
+  };
+}
+
+// pretty line
+function linePlainFromAvwx(icao, av, rwy){
+  const m = fromAvwx(av);
+  const c = m.clouds ? `${m.clouds.cover}${m.clouds.baseHundredsFt}` : "CLR";
+  const cw = crosswind(m.wind.dir, m.wind.spd, rwy.hdg);
+  const cwTxt = cw ? `Crosswind ≈ ${cw.x} kt (Δ${cw.diff}°), head/tail ≈ ${cw.h} kt.` : "Crosswind N/A.";
+  return {
+    plain: `${m.cat}. Winds ${m.wind.dir ?? "VRB"}@${m.wind.spd ?? "—"}${m.wind.gust?`G${m.wind.gust}`:""}KT, vis ${m.visSM}SM, clouds ${c}. RWY ${rwy.name} (${rwy.hdg}°): ${cwTxt}`,
+    raw: `METAR: ${m.raw}${m.altHg?`\nAltimeter ${m.altHg} inHg.`:""}`
+  };
+}
+
+function answer(query){
+  const q = query.trim().toLowerCase();
+
+  if(q.includes('engine fire')){
+    return `You: ${query}
+
+Avia: ENGINE FIRE IN FLIGHT - C172
+1) Pitch - 68 KTS
+2) Select best field
+3) Selector - TRY L/R/BOTH
+4) Shutoff - IN
+5) Throttle - ADJUST FOR ENGINE RESTART
+6) Mixture - IN
+7) Fuel Pump - ON
+8) Magnetos - TRY BOTH/L/R
+-- IF ENGINE FAILS TO START --
+9) Squawk - 7700
+10) Com - SET 121.5
+11) ELT - ON
+12) EMERGENCY LANDING WITHOUT POWER
+On 121.5 DECLARE: "Mayday mayday mayday [who] [where] emergency landing [#passengers] [need]"`;
+  }
+
+  if(q.includes('weather') && (q.includes('kpao') || q.includes('palo alto') || q.includes('pao'))){
+    const m = WX.KPAO || FALLBACK.KPAO;
+    const { plain, raw } = linePlainFromAvwx('KPAO', m, RUNWAY.KPAO);
+    return `You: ${query}
+
+Avia: ${plain}
+${raw}`;
+  }
+
+  if((q.includes('can i land') || q.includes('can i land in')) && (q.includes('ksfo') || q.includes('sfo') || q.includes('san francisco'))){
+    const m = WX.KSFO || FALLBACK.KSFO;
+    const { plain, raw } = linePlainFromAvwx('KSFO', m, RUNWAY.KSFO);
+    const note = "Airspace note: KSFO is Class B primary — arrival requires ATC clearance and coordination.";
+    return `You: ${query}
+
+Avia: ${plain}
+${note}
+${raw}`;
+  }
+
+  return `You: ${query}
+
+Avia: Try a preset above (KSFO landing, engine fire, KPAO weather).`;
+}
+
+document.querySelectorAll('#avia-live-demo button').forEach(btn=>{
+      btn.style.cssText="padding:8px 12px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;border-radius:10px;cursor:pointer";
+      btn.onclick = () => log.textContent = answer(btn.textContent);
+    });
+
+// Load KSFO/KPAO
+const WX = { KSFO: null, KPAO: null };
+
+(async function loadWeather(){
+  try {
+    console.log('Fetching weather...');
+    const [sfo, pao] = await Promise.all([fetchMETAR('KSFO'), fetchMETAR('KPAO')]);
+    console.log('Weather data:', { sfo, pao });
+    if (!sfo || !pao) throw new Error('Missing weather data');
+    WX.KSFO = sfo; WX.KPAO = pao;
+    dot.style.background = "#22C55E";
+    statusText.textContent = "Live METAR ✅";
+  } catch (e) {
+    console.error('Weather error:', e);
+    // Fallback to previous samples
+    WX.KSFO = FALLBACK.KSFO;
+    WX.KPAO = FALLBACK.KPAO;
+    dot.style.background = "#FFB020";
+    statusText.textContent = "Cached sample ⏳";
+  }
+  
+  // Show initial demo
+  log.textContent = answer("Can I land in SFO?");
+})();
+</script>
+
+    <section class="features">
+        <div class="container">
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 16.5L12 21l-10-4.5v-1.5l10 4.5 10-4.5v1.5zm-10-10.5L4 9l8 3 8-3-8-3z M12 3L2 7.5v9L12 21l10-4.5v-9L12 3zm8 11.5l-8 3.5-8-3.5V9l8 3 8-3v5.5z"/></svg>
+                </div>
+                <h3 class="feature-title">Land safely, every time</h3>
+                <p class="feature-desc">Instant crosswind + FAA limits for your aircraft.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+                </div>
+                <h3 class="feature-title">Weather you can actually read</h3>
+                <p class="feature-desc">METAR/TAF in plain English.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 14.58l-4.01-1.46l-5.99-5.62v-3c0-0.55-0.45-1-1-1s-1 0.45-1 1v3L3.01 13.12L2 14.58L9 17.5V19l-2.01 1.32L6 22l4-1l4 1l-0.99-1.68L11 19v-1.5l8-2.92z"/></svg>
+                </div>
+                <h3 class="feature-title">Works without internet</h3>
+                <p class="feature-desc">On-device model on Jetson Orin Nano.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm4-8c0 2.21-1.79 4-4 4s-4-1.79-4-4s1.79-4 4-4s4 1.79 4 4z"/></svg>
+                </div>
+                <h3 class="feature-title">Built on FAA procedures</h3>
+                <p class="feature-desc">Not a generic chatbot.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="founder">
+        <div class="container">
+            <h2>Built by a Pilot, for Pilots</h2>
+            <div class="founder-content">
+                <img src="images/founder.jpg" alt="Rana" class="founder-photo">
+                <p class="founder-bio">Hi, I'm Rana — private pilot in training and Stanford CS + MechE. I built Avia's FAA + METAR system and in-flight logic. YC has previously ranked me in the top 5% of founders. Avia exists because pilots deserve an AI copilot they can trust.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container">
+            <h2>Be the first to fly with Avia</h2>
+            <form class="email-form" id="email-form-bottom" onsubmit="handleSignup(event)">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Enter your email for early access" required>
+                    <button type="submit">Get Early Access ↗</button>
+                </div>
+                <div class="signup-status" style="font-size: 13px; color: var(--text-muted); text-align: left; min-height: 13px;"></div>
+            </form>
+            <div class="launch-note">Launching Fall 2025 • Early pilot slots are limited</div>
+        </div>
+    </section>
+
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Privacy</a>
+                <a href="mailto:founders@avia.ai">Contact: founders@avia.ai</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

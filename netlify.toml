@@ -1,0 +1,15 @@
+[build]
+  publish = "public"
+  command = "npm install && cp *.html public/ && cp -r images public/ && cd netlify/functions && npm install"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+    Surrogate-Control = "no-store"
