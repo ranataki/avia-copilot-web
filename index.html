@@ -111,6 +111,30 @@
             gap: 12px;
             margin-bottom: 4px;
         }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 640px) {
+            .email-form .input-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            button[type="submit"] {
+                width: 100%;
+            }
+
+            input[type="email"] {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+        }
         input[type="email"] {
             flex: 1;
             padding: 16px;
